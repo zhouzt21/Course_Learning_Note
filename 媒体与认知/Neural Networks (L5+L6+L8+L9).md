@@ -17,7 +17,10 @@
   * LSTM
   * attention
 * GNN  (Graph)
-  * 
+  * Graph, graph notations & graph data representation
+  * Building neural network for graph --- the GNN
+  * Treating GNN in another aspect --- the Spectral Graph CNN
+  * A glare of modern GNN architectures.
 
 
 ---
@@ -351,3 +354,55 @@ SOTA： state-of-the-art model，并不是特指某个具体的模型，而是�
 
 
 ## L9 GNN
+
+1. Graph, graph notations & graph data representation
+
+   * ![image-20231113141153016](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_graph_signal.png)
+
+   * ![image-20231113142655280](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_graph_task.png)
+
+   * ![image-20231113143733542](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_graph_task2.png)
+
+2. Building neural network for graph --- the GNN;
+
+* neighborhood-based pooling operation
+* By stacking message passing GNN layers together, a node can eventually incorporate information from across the entire graph
+* ![image-20231113150946536](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_GNN_update.png)
+
+![image-20231113150838427](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_GNN_performance.png)
+
+![image-20231113150817753](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_risk.png)
+
+3. Treating GNN in another aspect --- the Spectral Graph CNN
+
+* ∆f= f'(x)? − f'(x-1) = f(x+1) + f(x-1) + 2 ∗ f(x)  拉普拉斯算子
+* ![image-20231113152011090](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_GNN_matrix.png)
+
+* ![image-20231113152201101](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_GNN_matrix2.png)
+
+![image-20231113153716063](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_laplacian_matrix.png)
+
+* 无向图的拉普拉斯矩阵是对称阵，这时候可以将对角化
+* ![image-20231113153832108](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_laplacian_matrix2.png)
+
+![image-20231113154227447](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113-spectrum.png)
+
+使用多项式来描述一个对角阵，则参数变成了k个。
+
+![image-20231113154339168](D:\My_desktop\Blog备份\Course_Learning_note\媒体与认知\asset\20231113_simplified.png)
+
+也可以使用切比雪夫多项式逼近。
+
+
+
+4. A glare of modern GNN architectures.
+
+* Graph Attention Networks --- GAT
+  * GAT provides solutions using attention coefficient in message aggregation
+  *  attention coefficient: a measurement of how relevant (important) a neighboring node is in relation to the center node
+* Generative modelling & GraphVAE
+  * **Generative model** for graphs: generate new graphs by sampling from a learned distribution or by completing a graph given a starting point
+  * Design new drugs: novel molecular graphs with specific properties
+
+* Graph recurrent neural network --- GRNN
+  * For a time varying graph, recurrent unit could be applied
