@@ -4,55 +4,93 @@
 
 * L2 Feature Engineering I:to **learn lower dimensional representations** of the raw data
 
-  * general features: PCA
+  1. general features: PCA
 
-  * detecting features
-  * describing features
+  2. detecting features： corner detection
 
-  * learnt features
+     2.1 Harris Corner Detector
 
-  * Features are parts or patterns of an object in an image that help to identify it;  Features include properties like corners, edges, regions of interest points, ridges, etc.
+     2.2 Laplacian filter for scale selection
+
+  3. describing features： 
+
+     3.1 SIFT
+
+     3.2 SURF
+
+     3.3 Others
+
+  4. learnt features
 
 * L4 Feature Engineering II : to **analyze various features statistically** for machine vision tasks.
-  * Linear Regression
-    * LSE
-    * GD(SGD, ……)
-
-  * Binary Classification
-    * SVM
-    * Logistic regression
-
-  * Multi-class Classification
-    * Softmax regression
-    * K clustering
+  1. Linear Regression
+  
+     * LSE
+     * GD(SGD, ……)
+  
+  2. Binart Classification
+  
+     2.1 SVM
+  
+     2.2 Logistic regression
+  
+  3. Multi-class Classification
+  
+     3.1 Softmax regression
+  
+     3.2 KNN
+  
+     3.3 K-means clustering
 
 ----
 
-## L2
+## L2 Feature Engineering I
 
 ### 1 General features: PCA
 
 #### PCA thoerem
 
+* **Unsupervised** technique for extracting variance structure from high dimensional datasets.
+
+*  look into the **correlation** between the points
+  * By finding the **eigenvalues** and **eigenvectors** of the **covariance matrix**, the eigenvectors with **the largest eigenvalues** correspond to the dimensions that have **the strongest correlation** in the dataset. (This is the **principal component**)
+
 ![image-20230925145307972](.\asset\PCA_T1.png)
 
 ![image-20230925145334579](.\asset\PCA_T2.png)
+
+至此建立了协方差矩阵。接下来开始计算特征值和特征向量。
 
 ![image-20230925145357153](.\asset\PCA_T3.png)
 
 
 
+PCA使用的是每一个点都可以写成均值加上各个特征向量的线性叠加。可以直接对于那些特征值较小的特征向量直接舍去来压缩数据。
 
+PCA的应用：特征脸
+
+**Method A:** Build a PCA subspace for each person and check which subspace can reconstruct the test image the best 
+
+**Method B:** Build one PCA database for the whole dataset and then classify based on the weights.
 
 ![image-20230925145216163](.\asset\PCA-2.png)
+
+* PCA is a universal feature analysis method. It works well for both 1D data like ‘voice’, 2D data like ‘image’, and even high dim data like word files and statics.
+* However, PCA cannot detect features that human really cares about, such as ‘edges’, ‘bright spot’, and ‘corners
 
 ### 2 Detecting features: corner detection
 
 #### 2.1 Harris Corner Detector
 
+![image-20240112172309116](.\asset\harris.png)
+
+注意是对于图像的梯度进行主成分分析。
+
 ![image-20230925145044102](.\asset\image-20230925145044102.png)
 
 ![image-20230925145118010](.\asset\image-20230925145118010.png)
+
+上述第五步构造的式子来源于下面：（这个式子用来检测出角、边）
 
 ![image-20230925145144102](.\asset\image-20230925145144102.png)
 
@@ -61,17 +99,13 @@
 
 #### 2.2  Laplacian filter for scale selection
 
-**Highest response** when the signal has
-
-**the same characteristic scale** as the filter
+**Highest response** when the signal has **the same characteristic scale** as the filter
 
 ### 3 Describing features
 
+找到图片特征描述子的思路：image patch --(减少绝对大小的依赖)-->image gradient --(减少对形变的依赖)-->color histogram --(体现空间特征)-->spatial histogram--(完全抗旋转)-->SIFT(Scale Invariant featurer transform)
+
 #### 3.1 SIFT
-
-（需要看论文补充学习）
-
-Image patch -->image gradients --> color histogram (利用颜色占比) --> Spatial histograms -->**SIFT(Scale Invariant featurer transform)**
 
 * 图像局部特征描述子：旋转 尺度 亮度 不变
 
@@ -103,29 +137,39 @@ Image patch -->image gradients --> color histogram (利用颜色占比) --> Spat
 
 **SURF is a speeded-up (3 times faster) version of SIFT..** 
 
-* Good at handling images with blurring and rotation
-* Not good at handling viewpoint change and illumination change
+* Good at handling images with **blurring and rotation**
+* **Not good** at handling **viewpoint change** and **illumination** change
+* SURF approximates DOG in SIFT with **Box Filter**
+  * Convolution with box filter can be easily calculated via **integral images**
+  * It can be done in parallel for different scales.
+
 
 ![image-20230925153410456](.\asset\SURF.png)
 
-#### 3.3 other: 
+可以通过这个表达式计算出任意一块区域内的值总和。
 
-#### Haar-like Features
+#### 3.3 Others
 
+##### Haar-like Features (the first real-time face detector)
 
+* Consider adjacent rectangular regions at a specific location in a detection window
+* Sum up pixel intensities in each region and calculate the difference between these sums
+* Dark region subtract white region
+* **Advantage in calculation speed:**
+  * Due to the use of *integral images*, a Haar-like feature of any size can be calculated in constant time.
 
-#### HOG (Histogram of Oriented Gradients for Human Detection)
+##### HOG (Histogram of Oriented Gradients for Human Detection)
 
 * HOG counts **occurrences of gradient orientation** in localized portions of an image
 * It’s computed on a dense grid of uniformly spaced cells and uses overlapping local contrast normalization for improved accuracy
 
-
+* is widely applied in** **pedestrian detection/human detection**
 
 ![image-20230925155028462](.\asset\feature_summary.png)
 
 * OGB: 经常用于机器人中
 
-### 4 Learnt features
+### *4 Learnt features
 
 local feature based on learning
 
@@ -147,15 +191,9 @@ Detection and Description (CVPR 2018)
 
 (NeurIPS 2018)
 
-
-
-#### Deep Graphical Feature Learning for the 
+#### Deep raphical Feature Learning for the 
 
 Feature Matching Problem (ICCV 2019)
-
-
-
-
 
 
 
@@ -173,7 +211,7 @@ Feature Matching Problem (ICCV 2019)
 
 
 
-## L4 
+## L4 Feature Engineering II
 
 ### 1 Linear Regression
 
@@ -183,102 +221,108 @@ Feature Matching Problem (ICCV 2019)
 
 **LSE**
 
-![image-20231016140202026](C:\Users\zzt\AppData\Roaming\Typora\typora-user-images\image-20231016140202026.png)
+![image-20231016140202026](.\asset\image-20231016140202026.png)
 
 闭式解：
 
-![image-20231016140331222](D:\My_desktop\媒体与认知\note\asset\20231016_mse_solution.png)
+![image-20231016140331222](.\asset\20231016_mse_solution.png)
 
 数值解：
 
 * 梯度下降
 
-![image-20231016140611426](D:\My_desktop\媒体与认知\note\asset\20231009_GD.png)
+![image-20231016140611426](.\asset\20231009_GD.png)
 
 dynamic learning rate
 
 SGD
 
-![image-20231016140820155](C:\Users\zzt\AppData\Roaming\Typora\typora-user-images\image-20231016140820155.png)
+![image-20231016140820155](.\asset\image-20231016140820155.png)
 
 
 
+### 2 Binary Classification
 
+#### 2.1 SVM
 
+![image-20231016154742589](.\asset\image-20231016154742589.png)
 
+![image-20231016154820130](.\asset\image-20231016154820130.png)
 
+![image-20231016154849561](.\asset\image-20231016154849561.png)
 
+以上则已经转化为凸优化问题。
 
-## KNN
+![image-20240112225017063](.\asset\SVM_dual.png)
 
-K 近邻 (k - Nearest N eighbo r ，简称 kNN ) 学 习是一种常 用的监 督学习 方法，
+以上在构建损失函数的时候加上了前述约束条件，构建拉格朗日乘子。
 
-给定 测试样本 基于某种距离度量找出训练集中与其最靠近的 k 个训练样本 ，然后 基于这 k 个" 邻居 "的信息来进行预测
+![image-20240112224008247](.\asset\SMO.png)
 
-在分类任务中可使用**"投票法" **即选择这 k 个样本中出现 最多的类 别标记 作为预测结果;
+（注：二次规划（*Quadratic programming*））
 
-在回归任务中时使用**"平均法"** ，即将 这 k 个样本 的实值 输出标记 的平均值作为预测结果;还可基于距离远近进行加权平均或加权投票 ，距离越近的样本权重越大.
+此时转化为两两变量迭代问题的解决
 
-没有显式的训练过程!事实上，它是"懒惰学习" (lazy learning ) 的 著名代表，此类学习技术在**训练阶段**仅仅是把样本**保存**起来，训练时间开 销 为零，待 收到**测试样本**后再进行**处理**;相应的，那些在**训练阶段**就对样本**进行学习**处理 的方法，称为"急切学习" (eager learning) .
-
-
-
-
-
-## 2 Binary Classification
-
-### SVM
-
-![image-20231016154742589](C:\Users\zzt\AppData\Roaming\Typora\typora-user-images\image-20231016154742589.png)
-
-![image-20231016154820130](D:\My_desktop\媒体与认知\note\asset\20231009_SVM2)
-
-![image-20231016154849561](D:\My_desktop\媒体与认知\note\asset\20231009_SVM3)
-
-
-
-转化为凸优化问题 
-
-SMO（sequential minimal optimization，序列最小优化）算法是一种启发式算法。其基本思路是：如果**所有的变量的解都满足此最优问题的KKT条件**，那么这个最优问题的解就得到了，因为**KKT条件是该最优化问题有解的充要条件**。否则，我们就**选择两个变量，固定其它变量**，针对这两个变量构建一个二次规划问题，这个二次规划的问题关于这两个变量的解应该更接近原始二次规划问题的解，因为这会使得原始二次规划问题的目标函数值变小。
-原文链接：https://blog.csdn.net/Cyril_KI/article/details/107779454
+* SMO（sequential minimal optimization，序列最小优化）算法是一种启发式算法。其基本思路是：如果**所有的变量的解都满足此最优问题的KKT条件**，那么这个最优问题的解就得到了，因为**KKT条件是该最优化问题有解的充要条件**。否则，我们就**选择两个变量，固定其它变量**，针对这两个变量构建一个二次规划问题，这个二次规划的问题关于这两个变量的解应该更接近原始二次规划问题的解，因为这会使得原始二次规划问题的目标函数值变小。
+  原文链接：https://blog.csdn.net/Cyril_KI/article/details/107779454
+  * 基本思想：Need to solve n  values à --> construct relations between all à --> find the exact value for one à --> all n  values determined.
 
 CS229补充学习
 
+* 测试/预测时候的判断方法
 
+  ![image-20240112232403733](.\asset\SVM_test.png)
 
+* **Kernel Trick: Linear -> Non-linear**
+  * SVM还可以通过引入核函数解决非线性分类问题
+  * ![image-20240112232545898](.\asset\SVM_nonlinear.png)
 
+![image-20240112232828118](.\asset\SVM_kernel.png)
 
-二次规划（*Quadratic programming*）
+#### 2.2 Logistic regression
 
+![image-20240112233025230](.\asset\logistic_regression.png)
 
+![image-20240112233400987](.\asset\logistic2.png)
 
-### Logistic regression
+注意向量的 似然直接相乘。
 
+逻辑回归对于对数似然参数没有闭式解（但是线性回归有）
 
+### 3 multi-classification
 
-
-
-
-
-## 3 multi-classification
-
-### Softmax regression
+#### 3.1 Softmax regression
 
 logistic function (in binary) --> softmax (multi-class)
 
-没有闭式解
+![image-20240112233725817](.\asset\softmax.png)
 
 
 
 上述没有ground-truth时，使用聚类的办法(umsupervised)
 
-### K-means clustering
+#### 3.2 KNN（K 近邻）
+
+* 是一种常用的监督学习方法，是分类算法
+
+* K值含义 - 对于一个样本X，要给它分类，首先从数据集中，在**X附近找离它最近的K个数据**点，将它**划分为归属于类别最多**的一类
+
+  * 在分类任务中可使用**"投票法" **即选择这 k 个样本中出现 最多的类 别标记 作为预测结果;
+
+  * 在回归任务中时使用**"平均法"** ，即将 这 k 个样本 的实值 输出标记 的平均值作为预测结果;还可基于距离远近进行加权平均或加权投票 ，距离越近的样本权重越大.
+
+* 没有显式的训练过程
+  * 是"懒惰学习" (lazy learning ) 的 著名代表，此类学习技术在**训练阶段**仅仅是把样本**保存**起来，训练时间开 销 为零，待 收到**测试样本**后再进行**处理**;相应的，那些在**训练阶段**就对样本**进行学习**处理 的方法，称为"急切学习" (eager learning) .
+
+#### 3.3 K-means clustering
+
+![image-20240112234005286](.\asset\kclustering.png)
 
 
 
-
-
-
+* 是无监督学习，是聚类算法（和KNN不同；唯一相似点为：算法都包含给定一个点，在数据集中查找离它最近的点的过程。）
+* 有明显的训练过程
+* K值含义- K是事先设定的数字，将数据集分为K个簇，需要依靠人的先验知识
 
 
 
